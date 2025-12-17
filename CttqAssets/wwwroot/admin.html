@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Assets Admin</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 18px; }
+    textarea { width: 100%; height: 60vh; font-family: monospace; }
+    button { padding: 8px 14px; margin-top: 8px; }
+    .msg { margin-top: 8px; color: #080; }           /*成功消息*/
+    .err { color: #b00; }        /*错误消息*/
+  </style>
+</head>
+<body>
+  <h2>Assets 管理</h2>
+  <p>在这里编辑 JSON（groups 数组），保存后前端表格页面会读取并渲染。</p>
+  <textarea id="jsonArea"></textarea>
+  <br>
+  <button id="saveBtn">保存到后端</button>
+  <span id="status" class="msg"></span>
+
+  <script>
+    /*后端API接口地址*/
+    const API = '/api/assets';
+
+    async function load() {
+      try {
+        const res = await fetch(API);
+        const data = await res.json();
+        document.getElementById('jsonArea').value = JSON.stringify(data, null, 2);
+      } catch (e) {
+        document.getElementById('jsonArea').value = '// 载入失败：' + e.message;
+      }
+    }
+
+    document.getElementById('saveBtn').addEventListener('click', async () => {
+      const txt = document.getElementById('jsonArea').value;
+      let parsed;
+      try {
+        parsed = JSON.parse(txt);
+      } catch (e) {
+        document.getElementById('status').textContent = 'JSON 语法错误：' + e.message;
+        document.getElementById('status').className = 'err';
+        return;
+      }
+      try {
+        const res = await fetch(API, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(parsed)
+        });
+        const j = await res.json();
+        if (res.ok) {
+          document.getElementById('status').textContent = '保存成功';
+          document.getElementById('status').className = 'msg';
+        } else {
+          document.getElementById('status').textContent = '保存失败：' + (j.error || res.status);
+          document.getElementById('status').className = 'err';
+        }
+      } catch (err) {
+        document.getElementById('status').textContent = '请求失败：' + err.message;
+        document.getElementById('status').className = 'err';
+      }
+    });
+
+    load();
+  </script>
+</body>
+</html>

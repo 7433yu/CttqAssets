@@ -1,0 +1,311 @@
+{
+  "groups": [
+    {
+      "id": "nsclc-negative",
+      "title": "NSCLC",
+      "subtitle": "Driver Gene Negative",
+      "est": "44%, 470K",
+      "type": "singleRow",
+      "columns": {
+        "neo": [
+          {
+            "name": "贝莫苏拜单抗+安罗替尼",
+            "phase": "3",
+            "modality": "bio",
+            "desc": "参考：新辅助/辅助组合研究 - 贝莫苏拜单抗联合安罗替尼"
+          }
+        ],
+        "first": [
+          {
+            "name": "派安普利单抗+化疗",
+            "phase": "appr",
+            "modality": "bio",
+            "desc": "已上市/批准的免疫疗法联合化疗方案（示例）"
+          },
+          {
+            "name": "贝莫苏拜单抗+安罗替尼+化疗",
+            "phase": "3",
+            "modality": "bio",
+            "desc": "三联：贝莫苏拜单抗+安罗替尼+化疗（临床研究）"
+          },
+          {
+            "name": "贝莫苏拜单抗+化疗，序贯安罗替尼",
+            "phase": "3",
+            "modality": "bio",
+            "desc": "序贯策略：先免疫/后小分子"
+          }
+        ],
+        "second": [
+          {
+            "name": "TQB2101",
+            "sub": "(ROR1 ADC)",
+            "phase": "1",
+            "modality": "bio",
+            "desc": "TQB2101：ROR1 ADC，临床阶段1"
+          },
+          {
+            "name": "TQB6556",
+            "sub": "(PDL1/VEGF bsAb)",
+            "phase": "pcc",
+            "modality": "bio",
+            "desc": "双特异性抗体，PCC 标注"
+          },
+          {
+            "name": "TQB6411",
+            "sub": "(EGFR/c-Met ADC)",
+            "phase": "1",
+            "modality": "bio",
+            "desc": "EGFR/c-Met 联合ADC，早期临床"
+          },
+          {
+            "name": "IM201",
+            "sub": "(PD1-IL2)",
+            "phase": "1",
+            "modality": "bio",
+            "desc": "占位示例数据"
+          }
+        ],
+        "third": [
+          {
+            "name": "安罗替尼",
+            "phase": "appr",
+            "modality": "chem",
+            "desc": "安罗替尼：上市药物/已批准适应症（展示）"
+          },
+          {
+            "name": "TQB6520",
+            "sub": "(PDL1/VEGF ADC)",
+            "phase": "pcc",
+            "modality": "chem",
+            "desc": "PDL1/VEGF ADC，P 标注"
+          },
+          {
+            "name": "TQB2319",
+            "sub": "(ITGB6 ADC)",
+            "phase": "pcc",
+            "modality": "chem",
+            "desc": "ITGB6 定向 ADC，P 标注"
+          },
+          {
+            "name": "TQB3218",
+            "sub": "(PRMT5)",
+            "phase": "pcc",
+            "modality": "chem",
+            "desc": "PRMT5 抑制剂，P 标注"
+          }
+        ]
+      }
+    },
+    {
+      "id": "nsclc-positive",
+      "title": "NSCLC",
+      "subtitle": "Driver Gene Positive",
+      "est": "36%, 380K",
+      "type": "multiRow",
+      "subtypeRows": [
+        {
+          "subtype": "EGFR",
+          "columns": {
+            "neo": [],
+            "first": [
+              {
+                "name": "TQB2922",
+                "sub": "(EGFR/c-Met)+Osim",
+                "phase": "2",
+                "modality": "bio",
+                "desc": "TQB2922 联合 Osim"
+              },
+              {
+                "name": "TQB2922 (SC)",
+                "sub": "(EGFR/c-Met)",
+                "phase": "1",
+                "modality": "bio",
+                "desc": "TQB2922 (SC) 皮下制剂"
+              }
+            ],
+            "second": [
+              {
+                "name": "TQB2101",
+                "sub": "(ROR1 ADC)",
+                "phase": "1",
+                "modality": "bio",
+                "desc": "TQB2101：ROR1 ADC"
+              },
+              {
+                "name": "TQB3002",
+                "sub": "(4G EGFR-TKI)",
+                "phase": "1",
+                "modality": "chem",
+                "desc": "4G EGFR-TKI 候选"
+              },
+              {
+                "name": "TQB5427",
+                "sub": "(EGFR PROTAC)",
+                "phase": "pcc",
+                "modality": "chem",
+                "desc": "EGFR PROTAC（P）"
+              }
+            ],
+            "third": [
+              {
+                "name": "TQB6411",
+                "sub": "(EGFR/c-Met ADC)",
+                "phase": "1",
+                "modality": "bio",
+                "desc": "EGFR/c-Met 联合 ADC"
+              }
+            ]
+          }
+        },
+        {
+          "subtype": "KRAS",
+          "columns": {
+            "neo": [],
+            "first": [
+              {
+                "name": "格索雷塞 + IN10018",
+                "phase": "3",
+                "modality": "chem",
+                "desc": "我是测试用展示数据1"
+              }
+            ],
+            "second": [
+              {
+                "name": "格索雷塞",
+                "sub": "(KRAS G12C)",
+                "phase": "1",
+                "modality": "chem",
+                "desc": "我是测试用展示数据2"
+              }
+            ],
+            "third": [
+              {
+                "name": "TQB3125",
+                "sub": "(pan-KRAS)",
+                "phase": "pcc",
+                "modality": "chem",
+                "desc": "我是测试用展示数据3"
+              },
+              {
+                "name": "TQB3206",
+                "sub": "(KRAS G12D)",
+                "phase": "pcc",
+                "modality": "chem",
+                "desc": "我是测试用展示数据4"
+              },
+              {
+                "name": "TQB5466",
+                "sub": "(pan-KRAS PROTAC)",
+                "phase": "pcc",
+                "modality": "chem",
+                "desc": "我是测试用展示数据5"
+              }
+            ]
+          }
+        },
+        {
+          "subtype": "ALK/ROS1",
+          "columns": {
+            "neo": [],
+            "first": [
+              {
+                "name": "依奉阿克",
+                "sub": "(ALK)",
+                "phase": "appr",
+                "modality": "chem",
+                "desc": "我是测试用展示数据6"
+              },
+              {
+                "name": "安奈克替尼",
+                "sub": "(ROS1)",
+                "phase": "appr",
+                "modality": "chem",
+                "desc": "我是测试用展示数据7"
+              }
+            ],
+            "second": [
+              {
+                "name": "TQB5410",
+                "phase": "pcc",
+                "modality": "chem",
+                "desc": "我是测试用展示数据8"
+              }
+            ],
+            "third": []
+          }
+        },
+        {
+          "subtype": "Others",
+          "columns": {
+            "neo": [],
+            "first": [],
+            "second": [],
+            "third": [
+              {
+                "name": "TQB2102",
+                "sub": "(HER2 bsADC)",
+                "phase": "2",
+                "modality": "bio",
+                "desc": "我是测试用展示数据9"
+              },
+              {
+                "name": "TQB3218",
+                "sub": "(PRMT5)",
+                "phase": "pcc",
+                "modality": "chem",
+                "desc": "我是测试用展示数据10"
+              },
+              {
+                "name": "TQB5452",
+                "sub": "(MATA2)",
+                "phase": "pcc",
+                "modality": "chem",
+                "desc": "我是测试用展示数据11"
+              },
+              {
+                "name": "TQB3312",
+                "sub": "(SMARCA2 PROTAC)",
+                "phase": "pcc",
+                "modality": "chem",
+                "desc": "我是测试用展示数据12"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "sclc",
+      "title": "SCLC",
+      "subtitle": "",
+      "est": "20%, 210K",
+      "type": "singleRow",
+      "columns": {
+        "neo": [],
+        "first": [
+          {
+            "name": "贝莫苏拜单抗+安罗替尼+化疗",
+            "phase": "3",
+            "modality": "bio",
+            "desc": "SCLC 的三联试验/维持治疗探索"
+          },
+          {
+            "name": "贝莫苏拜单抗+安罗替尼（维持治疗）",
+            "phase": "3",
+            "modality": "bio",
+            "desc": "一线或维持策略"
+          }
+        ],
+        "second": [],
+        "third": [
+          {
+            "name": "安罗替尼",
+            "phase": "appr",
+            "modality": "chem",
+            "desc": "安罗替尼在 SCLC 中的研究或批准信息（示例）"
+          }
+        ]
+      }
+    }
+  ]
+}

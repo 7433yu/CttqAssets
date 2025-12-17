@@ -1,0 +1,780 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />          
+  <title>CTTQ assets in Lung Cancer — Interactive Table</title>
+  <style>
+    /* Page background (soft bubbles like PPT) */
+    body {
+      font-family: "Helvetica Neue", Arial, sans-serif;
+      margin: 0;
+      padding: 28px;
+      background: radial-gradient(circle at 10% 10%, rgba(0,150,180,0.04), transparent 6%),
+                  radial-gradient(circle at 80% 20%, rgba(0,150,180,0.03), transparent 8%),
+                  linear-gradient(#f6fbfc, #eef8fa);
+      color: #222;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.338);
+      border-radius: 6px;
+      padding: 18px;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.06);
+      border: 1px solid rgba(0,0,0,0.04);
+    }
+
+    h1 {
+      margin: 6px 0 18px 6px;
+      font-size: 26px;
+    }
+
+    /* Table layout */
+    .ct-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: auto;  /* 自动调整表格布局 */
+      font-size: 13px; /* 调整字体大小以适应缩放 */
+      word-wrap: break-word; /* 防止单元格内容溢出 */
+    }
+
+    /*标题行样式*/
+    .ct-table thead th {
+      background: #9b9b9b; /* header gray from PPT */
+      color: white;
+      padding: 10px 12px;
+      text-align: center;
+      font-weight: 600;
+      border-right: 1px solid rgba(255,255,255,0.14);
+    }
+
+
+    /*单元格样式*/
+    .ct-table tbody td {
+      vertical-align: middle;
+      text-align: center;
+      padding: 12px;
+      border-bottom: 1.5px solid rgba(2, 2, 2, 0.646);
+      border-right: 1.5px solid rgba(0,0,0,0.06);
+      min-height: 76px;
+      position: relative;
+    }
+
+    /*左侧标签列样式*/
+    .left-label {
+      width: 160px;
+      font-weight: 700;
+      color: #333;
+      background: transparent;
+      border-right: 1px solid rgba(0,0,0,0.06);
+      padding: 18px 12px;
+    }
+
+    .ct-table tbody td.dashed {
+      border-bottom: 1.5px dashed rgba(0, 0, 0, 0.477);
+    }
+
+    /* Est. epi (CN) 单元格内两列布局 */
+    .est-epi-2col {
+      padding: 14px 12px;
+      vertical-align: middle;
+    }
+
+    .epi-wrap {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      column-gap: 12px;
+      align-items: start;
+    }
+
+    .epi-main {
+      text-align: left;
+    }
+
+    .epi-title {
+      font-weight: 700;
+    }
+
+    .epi-sub {
+      font-weight: 500;
+      margin-top: 4px;
+    }
+
+    .epi-num {
+      font-weight: 600;
+      margin-top: 4px;
+    }
+
+    .epi-subtypes {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .epi-item {
+      font-weight: 600;
+      text-align: left;
+    }
+
+    .epi-item span {
+      font-weight: 500;
+      font-size: 12px;
+    }
+
+
+    /* Row group separator lines */
+    .row-divider td {
+      border-bottom: 3px solid rgba(0,0,0,0.08);
+      padding-top: 22px;
+      padding-bottom: 22px;
+    }
+
+    /* 单元格里的圆角矩形 */
+    .asset {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 14px;
+      margin: 6px 8px 6px 0;
+      /*鼠标变手型，提示可点击*/
+      cursor: pointer;
+      user-select: none;
+      box-shadow: 0 1px 4px rgba(81, 78, 78, 0.06);
+      /*动画效果*/
+      transition: transform .06s ease, box-shadow .08s ease;
+    }
+    /*点击后增加一个实线边框*/
+    .asset:focus { outline: 2px solid #2aa; }
+    .asset:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,0.08); }
+
+    /* 单元格内圆角矩形的颜色 */
+    .approved { background: #ef6c5a; color: #fff; }  /* red approval */
+    .neutral { background: #e9eef0; color: #333; }   /* pale */
+    .muted { background: #ffffff88; color: #333; border: 1px solid rgba(0,0,0,0.05); }
+    .bio { background: #09aeb0; color: #fff; }        /* teal / Biological Innovative */
+    .chem { background: #f3c6cb; color: #7a1117; }   /* rose / Chemical Innovative */
+
+    /* Small metadata / short caption inside pill */
+    .asset .name { font-weight: 600; font-size: 13px; white-space: nowrap; }
+    .asset .sub { font-weight: 500; opacity: 0.95; font-size: 11px; }
+
+    /*角标样式*/
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      font-size: 11px;
+      color: white;
+      background: #d93c3c; /* red circle */
+      box-shadow: 0 1px 2px rgba(0,0,0,0.12);
+      margin-left: 6px;
+      flex: 0 0 18px;
+    }
+    .badge.phase-1 { background: #e84a4a; }
+    .badge.phase-2 { background: #e85a2b; }
+    .badge.phase-3 { background: #c42b55; }
+    .badge.pcc { background: #7b2b2b; }
+    .badge.appr { background: #2fa953; } /* green check */
+
+    /* 弹出的详细信息框 */
+    .popover {
+      position: absolute;
+      z-index: 1200;
+      min-width: 220px;
+      max-width: 380px;
+      background: #fff;
+      border-radius: 8px;
+      padding: 12px 14px;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.12);
+      border: 1px solid rgba(0,0,0,0.06);
+      display: none;
+    }
+    .popover.visible { display: block; }
+    .popover h3 { margin: 0 0 6px 0; font-size: 15px; }
+    .popover .meta { font-size: 12px; color: #666; margin-bottom: 8px; }
+    .popover .desc { font-size: 13px; color: #222; line-height: 1.35; }
+
+    /* 图例样式 */
+    .legend {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-top: 14px;
+      flex-wrap: wrap;
+      padding: 10px 6px;
+    }
+    .legend .item {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      background: rgba(0,0,0,0.02);
+      padding: 6px 10px;
+      border-radius: 14px;
+      font-size: 13px;
+    }
+
+    .legend .item.bio {
+      background: #09aeb0 !important;  /* 青色背景 */
+      color: white !important;         /* 白色文字 */
+    }
+
+    .legend .item.chem {
+      background: #f3c6cb !important;  /* 粉色背景 */
+      color: #7a1117 !important;       /* 深红色文字（确保可读性） */
+    }
+    .legend .swatch { width: 14px; height: 14px; border-radius: 4px; display:inline-block; }
+
+      /* 屏幕较小时的响应式设计（可选） */
+    @media (max-width: 900px) {
+      .left-label { display: none; }
+      .ct-table thead th:nth-child(1) { display: none; }
+      .ct-table { font-size: 12px; }
+    }
+
+      /* MultiRow 子行：默认底边为虚线（所有数据列和 subtype 列） */
+      .ct-table tbody tr.subrow td,
+      .ct-table tbody tr.subrow th {
+          border-bottom: 1.5px dashed rgba(2, 2, 2, 0.646);
+      }
+
+      /* 组顶部：在组最上边绘制实线（同时保持本行底边为虚线） */
+      .ct-table tbody tr.group-top td,
+      .ct-table tbody tr.group-top th {
+          border-top: 1.5px solid rgba(2, 2, 2, 0.646);
+          border-bottom: 1.5px dashed rgba(2, 2, 2, 0.646);
+      }
+
+      /* 组中间（非首非尾）：继续保持虚线（上面规则已涵盖） */
+      .ct-table tbody tr.subrow-middle td,
+      .ct-table tbody tr.subrow-middle th {
+          border-bottom: 1.5px rgba(2, 2, 2, 0.646);
+      }
+
+      /* 组底部：覆盖为实线（宽一些以区分组间） */
+      .ct-table tbody tr.group-bottom td,
+      .ct-table tbody tr.group-bottom th {
+          border-bottom: 1.5px solid rgba(2, 2, 2, 0.646);
+      }
+
+      /* 确保 left-label（左侧第一列/第二列）也遵守相同的虚线/实线视觉 */
+      .ct-table tbody tr.subrow td.left-label,
+      .ct-table tbody tr.subrow th.left-label {
+          border-bottom: 1.5px dashed rgba(2, 2, 2, 0.646);
+      }
+
+      .ct-table tbody tr.group-top td.left-label,
+      .ct-table tbody tr.group-top th.left-label {
+          border-top: 1.5px solid rgba(2, 2, 2, 0.646);
+          border-bottom: 1.5px dashed rgba(2, 2, 2, 0.646);
+      }
+
+      .ct-table tbody tr.group-bottom td.left-label,
+      .ct-table tbody tr.group-bottom th.left-label {
+          border-bottom: 1.5px solid rgba(2, 2, 2, 0.646);
+      }
+      .ct-table tbody tr.subrow td:not(.left-label) {
+          border-bottom: 1.5px dashed rgba(2, 2, 2, 0.646);
+      }
+
+      /* 组顶部：所有单元格顶部实线；底部仍为虚线以分隔到下一子行 */
+      .ct-table tbody tr.group-top td,
+      .ct-table tbody tr.group-top th {
+          border-top: 1.5px solid rgba(2, 2, 2, 0.646) !important;
+          border-bottom: 1.5px dashed rgba(2, 2, 2, 0.646) !important;
+      }
+
+      /* 组底部：所有单元格底部实线（覆盖虚线） */
+      .ct-table tbody tr.group-bottom td,
+      .ct-table tbody tr.group-bottom th {
+          border-bottom: 1.5px solid rgba(2, 2, 2, 0.646) !important
+      }
+
+      /* 确保跨行左侧主单元格也显示组的顶/底实线 */
+      .ct-table tbody td.left-label.group-main,
+      .ct-table tbody th.left-label.group-main {
+          border-top: 1.5px solid rgba(2, 2, 2, 0.646) !important;
+          border-bottom: 1.5px solid rgba(2, 2, 2, 0.646) !important
+      }
+      }
+  </style>
+</head>
+<body>
+    <div class="container" id="app">
+        <h1>CTTQ assets in Lung Cancer</h1>
+
+        <table class="ct-table" role="table" aria-label="CTTQ assets in Lung Cancer">
+            <colgroup>
+                <col> <!-- left col 1 (主信息) -->
+                <col> <!-- left col 2 (subtype 行) -->
+                <col> <!-- (Neo)adjuvant -->
+                <col> <!-- First-line -->
+                <col> <!-- Second-line -->
+                <col> <!-- Third-line -->
+            </colgroup>
+
+            <thead>
+                <tr>
+                    <!-- 视觉上仍然显示为 5 列（第一列 colspan=2） -->
+                    <th colspan="2">Est. epi (CN)</th>
+                    <th>(Neo)adjuvant</th>
+                    <th>First-line therapy</th>
+                    <th>Second-line therapy</th>
+                    <th>Third-line or higher</th>
+                </tr>
+            </thead>
+            <tbody id="table-body">
+
+                <!-- NSCLC Driver Gene Negative (top group) -->
+                <!--<tr>-->
+                <!-- 合并前两列显示 -->
+                <!--<td class="left-label" colspan="2">
+                    NSCLC<br><span style="font-weight:500;">Driver Gene Negative</span><br><span style="font-weight:600; margin-top:6px;">44%, 470K</span>
+                  </td>
+
+                  <td>
+                    <div class="asset bio" tabindex="0" data-title="贝莫苏拜单抗+安罗替尼" data-phase="3" data-desc="参考：新辅助/辅助组合研究 - 贝莫苏拜单抗联合安罗替尼">
+                      <span class="name">贝莫苏拜单抗+安罗替尼</span>
+                      <span class="badge phase-3">3</span>
+                    </div>
+                  </td>
+
+                  <td>
+                    <div class="asset bio" tabindex="0" data-title="派安普利单抗+化疗" data-phase="appr" data-desc="已上市/批准的免疫疗法联合化疗方案（示例）">
+                      <span class="name">派安普利单抗+化疗</span>
+                      <span class="badge appr">✓</span>
+                    </div>
+
+                    <div class="asset bio" tabindex="0" data-title="贝莫苏拜单抗+安罗替尼+化疗" data-phase="3" data-desc="三联：贝莫苏拜单抗+安罗替尼+化疗（临床研究）">
+                      <span class="name">贝莫苏拜单抗+安罗替尼+化疗</span>
+                      <span class="badge phase-3">3</span>
+                    </div>
+
+                    <div class="asset bio" tabindex="0" data-title="贝莫苏拜单抗抗+化疗，序贯安罗替尼" data-phase="3" data-desc="序贯策略：先免疫/后小分子">
+                      <span class="name">贝莫苏拜单抗+化疗，序贯安罗替尼</span>
+                      <span class="badge phase-3">3</span>
+                    </div>
+                  </td>
+
+                  <td>
+                    <div class="asset bio" tabindex="0" data-title="TQB2101 (ROR1 ADC)" data-phase="1" data-desc="TQB2101：ROR1 ADC，临床阶段1">
+                      <span class="name">TQB2101</span>
+                      <span class="sub">(ROR1 ADC)</span>
+                      <span class="badge phase-1">1</span>
+                    </div>
+
+                    <div class="asset bio" tabindex="0" data-title="TQB6556 (PDL1/VEGF bsAb)" data-phase="pcc" data-desc="双特异性抗体，PCC 标注">
+                      <span class="name">TQB6556</span>
+                      <span class="sub">(PDL1/VEGF bsAb)</span>
+                      <span class="badge pcc">P</span>
+                    </div>
+
+                    <div class="asset bio" tabindex="0" data-title="TQB6411 (EGFR/c-Met ADC)" data-phase="1" data-desc="EGFR/c-Met 联合ADC，早期临床">
+                      <span class="name">TQB6411</span>
+                      <span class="sub">(EGFR/c-Met ADC)</span>
+                      <span class="badge phase-1">1</span>
+                    </div>
+
+                     <div class="asset bio" tabindex="0" data-title="IM201 (PD1-IL2)" data-phase="1" data-desc="你好我是用来暂时填充这一块的数据">
+                      <span class="name">IM201</span>
+                      <span class="sub">(PD1-IL2)</span>
+                      <span class="badge phase-1">1</span>
+                    </div>
+
+                  </td>
+
+                  <td>
+                    <div class="asset chem" tabindex="0" data-title="安罗替尼（单药）" data-phase="appr" data-desc="安罗替尼：上市药物/已批准适应症（展示）">
+                      <span class="name">安罗替尼</span>
+                      <span class="badge appr">✓</span>
+                    </div>
+
+                    <div class="asset chem" tabindex="0" data-title="TQB6520 (PDL1/VEGF ADC)" data-phase="pcc" data-desc="PDL1/VEGF ADC，P 标注">
+                      <span class="name">TQB6520</span>
+                      <span class="sub">(PDL1/VEGF ADC)</span>
+                      <span class="badge pcc">P</span>
+                    </div>
+
+                    <div class="asset chem" tabindex="0" data-title="TQB2319 (ITGB6 ADC)" data-phase="pcc" data-desc="ITGB6 定向 ADC，P 标注">
+                      <span class="name">TQB2319</span>
+                      <span class="sub">(ITGB6 ADC)</span>
+                      <span class="badge pcc">P</span>
+                    </div>
+
+                    <div class="asset chem" tabindex="0" data-title="TQB3218 (PRMT5)" data-phase="pcc" data-desc="PRMT5 抑制剂，P 标注">
+                      <span class="name">TQB3218</span>
+                      <span class="sub">(PRMT5)</span>
+                      <span class="badge pcc">P</span>
+                    </div>
+
+                  </td>
+                </tr>-->
+                <!-- NSCLC Driver Gene Positive:
+                     左侧拆成两列：第一个 td (left-label) rowspan=4 放主信息（不合并）
+                     第二列每一行单独放置对应的 subtype（EGFR / KRAS / ALK/ROS1 / Others）
+                -->
+                <!--<tr class="subrow">-->
+                <!-- 左侧主信息（占第一列，跨 4 行） -->
+                <!--<td class="left-label" rowspan="4">
+                  <div class="epi-main">
+                    <div class="epi-title">NSCLC</div>
+                    <div class="epi-sub">Driver Gene Positive</div>
+                    <div class="epi-num">36%, 380K</div>
+                  </div>
+                </td>-->
+                <!-- 左侧第二列：EGFR（不合并） -->
+                <!--<td class="left-label dashed">
+                  EGFR<br><span style="font-weight:500;">(~50%)</span>
+                </td>
+
+                <td class="dashed"></td>-->
+                <!-- EGFR 行：First-line -->
+                <!--<td class="dashed">
+                  <div class="asset bio" tabindex="0" data-title="TQB2922 (EGFR/c-Met)+Osim" data-phase="2" data-desc="TQB2922 联合 Osim">
+                    <span class="name">TQB2922</span>
+                    <span class="sub">(EGFR/c-Met)+Osim</span>
+                    <span class="badge phase-2">2</span>
+                  </div>
+
+                  <div class="asset bio" tabindex="0" data-title="TQB2922 (SC)" data-phase="1" data-desc="TQB2922 (SC) 皮下制剂">
+                    <span class="name">TQB2922 (SC)</span>
+                    <span class="sub">(EGFR/c-Met)</span>
+                    <span class="badge phase-1">1</span>
+                  </div>
+                </td>-->
+                <!-- EGFR 行：Second-line -->
+                <!--<td class="dashed">
+                  <div class="asset bio" tabindex="0" data-title="TQB2101 (ROR1 ADC)" data-phase="1" data-desc="TQB2101：ROR1 ADC">
+                    <span class="name">TQB2101</span>
+                    <span class="sub">(ROR1 ADC)</span>
+                    <span class="badge phase-1">1</span>
+                  </div>
+
+                  <div class="asset chem" tabindex="0" data-title="TQB3002 (4G EGFR-TKI)" data-phase="1" data-desc="4G EGFR-TKI 候选">
+                    <span class="name">TQB3002</span>
+                    <span class="sub">(4G EGFR-TKI)</span>
+                    <span class="badge phase-1">1</span>
+                  </div>
+
+                  <div class="asset chem" tabindex="0" data-title="TQB5427 (EGFR PROTAC)" data-phase="pcc" data-desc="EGFR PROTAC（P）">
+                    <span class="name">TQB5427</span>
+                    <span class="sub">(EGFR PROTAC)</span>
+                    <span class="badge pcc">P</span>
+                  </div>
+                </td>-->
+                <!-- EGFR 行：Third-line -->
+                <!--<td class="dashed">
+                    <div class="asset bio" tabindex="0" data-title="TQB6411 (EGFR/c-Met ADC)" data-phase="1" data-desc="EGFR/c-Met 联合 ADC">
+                      <span class="name">TQB6411</span>
+                      <span class="sub">(EGFR/c-Met ADC)</span>
+                      <span class="badge phase-1">1</span>
+                    </div>
+                  </td>
+                </tr>-->
+                <!-- KRAS -->
+                <!--<tr class="subrow">-->
+                <!-- 左侧第二列：KRAS -->
+                <!--<td class="left-label dashed">
+                    KRAS<br><span style="font-weight:500;">(~10%)</span>
+                  </td>
+
+                  <td class="dashed"></td>
+
+                  <td class="dashed">
+                    <div class="asset chem">
+                      <span class="name">格索雷塞 + IN10018</span>
+                      <span class="badge phase-3">3</span>
+                    </div>
+                  </td>
+
+                  <td class="dashed">
+                    <div class="asset chem">
+                      <span class="name">格索雷塞</span>
+                      <span class="sub">(KRAS G12C)</span>
+                      <span class="badge phase-1">1</span>
+                    </div>
+                  </td>
+
+                  <td class="dashed">
+                    <div class="asset chem">
+                      <span class="name">TQB3125</span>
+                      <span class="sub">(pan-KRAS)</span>
+                      <span class="badge pcc">P</span>
+                    </div>
+
+                    <div class="asset chem">
+                      <span class="name">TQB3206</span>
+                      <span class="sub">(KRAS G12D)</span>
+                      <span class="badge pcc">P</span>
+                    </div>
+
+                    <div class="asset chem">
+                      <span class="name">TQB5466</span>
+                      <span class="sub">(pan-KRAS PROTAC)</span>
+                      <span class="badge pcc">P</span>
+                    </div>
+                  </td>
+                </tr>-->
+                <!-- ALK / ROS1 -->
+                <!--<tr class="subrow">
+                  <td class="left-label dashed">
+                    ALK/ROS1<br><span style="font-weight:500;">(~5%)</span>
+                  </td>
+
+                  <td class="dashed"></td>
+
+                  <td class="dashed">
+                    <div class="asset chem">
+                      <span class="name">依奉阿克</span>
+                      <span class="sub">(ALK)</span>
+                      <span class="badge appr">✓</span>
+                    </div>
+
+                    <div class="asset chem">
+                      <span class="name">安奈克替尼</span>
+                      <span class="sub">(ROS1)</span>
+                      <span class="badge appr">✓</span>
+                    </div>
+                  </td>
+
+                  <td class="dashed">
+                    <div class="asset chem">
+                      <span class="name">TQB5410</span>
+                      <span class="badge pcc">P</span>
+                    </div>
+                  </td>
+
+                  <td class="dashed"></td>
+                </tr>-->
+                <!-- Others -->
+                <!--<tr class="subrow">
+                  <td class="left-label">Others</td>
+
+                  <td></td>
+
+                  <td></td>
+
+                  <td></td>
+
+                  <td>
+                    <div class="asset bio">
+                      <span class="name">TQB2102</span>
+                      <span class="sub">(HER2 bsADC)</span>
+                      <span class="badge phase-2">2</span>
+                    </div>
+
+                    <div class="asset chem">
+                      <span class="name">TQB3218</span>
+                      <span class="sub">(PRMT5)</span>
+                      <span class="badge pcc">P</span>
+                    </div>
+
+                    <div class="asset chem">
+                      <span class="name">TQB5452</span>
+                      <span class="sub">(MATA2)</span>
+                      <span class="badge pcc">P</span>
+                    </div>
+
+                    <div class="asset chem">
+                      <span class="name">TQB3312</span>
+                      <span class="sub">(SMARCA2 PROTAC)</span>
+                      <span class="badge pcc">P</span>
+                    </div>
+                  </td>
+                </tr>-->
+                <!-- SCLC group -->
+                <!--<tr>-->
+                <!-- SCLC 保持合并前两列显示 -->
+                <!--<td class="left-label" colspan="2">
+                  SCLC<br><span style="font-weight:500;">20%, 210K</span>
+                </td>
+                <td>-->
+                <!-- none -->
+                <!--</td>
+                  <td>
+                    <div class="asset bio" tabindex="0" data-title="贝莫苏拜单抗+安罗替尼+化疗" data-phase="3" data-desc="SCLC 的三联试验/维持治疗探索">
+                      <span class="name">贝莫苏拜单抗+安罗替尼+化疗</span>
+                      <span class="badge appr">✓</span>
+                    </div>
+
+                    <div class="asset bio" tabindex="0" data-title="贝莫苏拜单抗单抗+安罗替尼（维持治疗）" data-phase="3" data-desc="一线或维持策略">
+                      <span class="name">贝莫苏拜单抗+安罗替尼（维持治疗）</span>
+                      <span class="badge phase-3">3</span>
+                    </div>
+                  </td>
+
+                  <td></td>
+                  <td>
+                    <div class="asset chem" tabindex="0" data-title="安罗替尼（SCLC）" data-phase="appr" data-desc="安罗替尼在 SCLC 中的研究或批准信息（示例）">
+                      <span class="name">安罗替尼</span>
+                      <span class="badge appr">✓</span>
+                    </div>
+                  </td>
+                </tr>-->
+
+            </tbody>
+        </table>
+
+        <!-- Popover element reused -->
+        <div id="asset-popover" class="popover" role="dialog" aria-hidden="true">
+            <h3 id="pop-title">Title</h3>
+            <div class="meta" id="pop-meta">Phase • Modality</div>
+            <div class="desc" id="pop-desc">Description</div>
+        </div>
+
+        <!-- Legend -->
+        <div class="legend" aria-hidden="false">
+            <div class="item"><span class="swatch" style="background:#ef6c5a; border-radius:50%"></span> Approval</div>
+            <div class="item"><span class="swatch" style="background:#d93c3c; border-radius:50%">&nbsp;</span> PCC</div>
+            <div class="item"><span class="swatch" style="background:#e84a4a; border-radius:50%">&nbsp;</span> Phase 1</div>
+            <div class="item"><span class="swatch" style="background:#e85a2b; border-radius:50%">&nbsp;</span> Phase 2</div>
+            <div class="item"><span class="swatch" style="background:#c42b55; border-radius:50%">&nbsp;</span> Phase 3</div>
+            <div class="item bio"></span> Biological Innovative</div>
+            <div class="item chem"></span> Chemical Innovative</div>
+        </div>
+
+    </div>
+
+    <script>
+        // Interactive popover behavior:
+        (function () {
+            const app = document.getElementById('app');
+            const pop = document.getElementById('asset-popover');
+            const popTitle = document.getElementById('pop-title');
+            const popMeta = document.getElementById('pop-meta');
+            const popDesc = document.getElementById('pop-desc');
+
+            // Utility to parse phase string into nice label
+            function phaseLabel(phase) {
+                if (!phase) return '';
+                if (phase === 'appr') return 'Approval';
+                if (phase === 'pcc') return 'PCC';
+                return 'Phase ' + phase;
+            }
+
+            // Show popover near clicked element
+            function showPopover(target) {
+                const title = target.getAttribute('data-title') || target.innerText.trim();
+                const phase = target.getAttribute('data-phase') || '';
+                const desc = target.getAttribute('data-desc') || '无详细信息。';
+
+                popTitle.textContent = title;
+                popMeta.textContent = phaseLabel(phase);
+                popDesc.textContent = desc;
+
+                // Positioning: try to place below the element, with some viewport checks
+                const rect = target.getBoundingClientRect();
+                const popRect = pop.getBoundingClientRect();
+                const bodyRect = document.body.getBoundingClientRect();
+
+                // Default below-right aligned
+                let top = rect.bottom + window.scrollY + 8;
+                let left = rect.left + window.scrollX;
+
+                // If pop would overflow right, move it left
+                if (left + 380 > window.innerWidth - 16) {
+                    left = Math.max(16, window.innerWidth - 16 - 380);
+                }
+
+                // If not enough space below, place above
+                if (top + popRect.height > window.scrollY + window.innerHeight) {
+                    top = rect.top + window.scrollY - popRect.height - 10;
+                }
+
+                pop.style.top = top + 'px';
+                pop.style.left = left + 'px';
+
+                pop.classList.add('visible');
+                pop.setAttribute('aria-hidden', 'false');
+                // Mark current target so clicking again toggles
+                pop._currentTarget = target;
+                target.classList.add('active');
+            }
+
+            function hidePopover() {
+                if (pop._currentTarget) pop._currentTarget.classList.remove('active');
+                pop.classList.remove('visible');
+                pop.setAttribute('aria-hidden', 'true');
+                pop._currentTarget = null;
+            }
+
+            // Click handler for asset elements
+            app.addEventListener('click', function (ev) {
+                const asset = ev.target.closest('.asset');
+                if (asset) {
+                    ev.stopPropagation();
+                    // Toggle: if clicking same asset again -> hide
+                    if (pop._currentTarget === asset && pop.classList.contains('visible')) {
+                        hidePopover();
+                        return;
+                    }
+                    showPopover(asset);
+                    return;
+                }
+
+                // clicking other places closes popover
+                hidePopover();
+            });
+
+            // Close popover on ESC
+            document.addEventListener('keydown', function (ev) {
+                if (ev.key === 'Escape') hidePopover();
+            });
+
+            // When window resizes, hide popover to avoid mis-positioning
+            window.addEventListener('resize', hidePopover);
+            window.addEventListener('scroll', function () {
+                // close on scroll to avoid floating mismatch
+                if (pop.classList.contains('visible')) hidePopover();
+            });
+
+
+            // Make assets keyboard accessible (Enter/Space)
+            const assets = Array.from(document.querySelectorAll('.asset'));
+            assets.forEach(a => {
+                a.addEventListener('keydown', function (ev) {
+                    if (ev.key === 'Enter' || ev.key === ' ') {
+                        ev.preventDefault();
+                        a.click();
+                    }
+                });
+            });
+        })();
+    </script>
+    <style>
+        /* 图例（legend）交互样式 */
+        .legend .item {
+            cursor: pointer; /* 鼠标悬停变手形 */
+            user-select: none;
+            transition: transform .06s ease, box-shadow .12s ease;
+        }
+
+            .legend .item:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+            }
+
+            /* 选中时的视觉（active） */
+            .legend .item.active {
+                box-shadow: 0 10px 28px rgba(0,0,0,0.12);
+                transform: translateY(-3px) scale(1.01);
+                border-radius: 12px;
+            }
+
+        /* 保证隐藏的 assets-container 与 asset 不占位 */
+        .assets-container[style*="display: none"] {
+            display: none !important;
+        }
+
+        .asset[style*="display: none"] {
+            display: none !important;
+        }
+    </style>
+    <script src="/table-render.js"></script>
+</body>
+</html>
