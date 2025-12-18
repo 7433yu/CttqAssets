@@ -76,14 +76,14 @@
             "name": "TQB6520",
             "sub": "(PDL1/VEGF ADC)",
             "phase": "pcc",
-            "modality": "chem",
+            "modality": "bio",
             "desc": "PDL1/VEGF ADC，P 标注"
           },
           {
             "name": "TQB2319",
             "sub": "(ITGB6 ADC)",
             "phase": "pcc",
-            "modality": "chem",
+            "modality": "bio",
             "desc": "ITGB6 定向 ADC，P 标注"
           },
           {
@@ -92,6 +92,13 @@
             "phase": "pcc",
             "modality": "chem",
             "desc": "PRMT5 抑制剂，P 标注"
+          },
+          {
+            "name": "TQB5452",
+            "sub": "(MAT2A)",
+            "phase": "pcc",
+            "modality": "chem",
+            "desc": "随便填的详细信息内容"
           }
         ]
       }
@@ -285,7 +292,7 @@
         "first": [
           {
             "name": "贝莫苏拜单抗+安罗替尼+化疗",
-            "phase": "3",
+            "phase": "appr",
             "modality": "bio",
             "desc": "SCLC 的三联试验/维持治疗探索"
           },

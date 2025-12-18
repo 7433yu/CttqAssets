@@ -28,7 +28,6 @@ string DataFile = Path.Combine(appDataDir, DefaultFileName);
 
 object fileLock = new();
 
-// 生成示例数据
 JsonObject GetSampleData()
 {
     var sample = new JsonObject
@@ -103,7 +102,6 @@ app.MapGet("/api/assets", () =>
     return Results.Json(data);
 });
 
-// POST /api/assets — 更稳健的写入逻辑，捕获 IO 错误并返回合适响应
 app.MapPost("/api/assets", async (HttpRequest req) =>
 {
     try
@@ -138,7 +136,7 @@ app.MapPost("/api/assets", async (HttpRequest req) =>
         }
         catch (IOException ioex)
         {
-            // 记录到控制台供调试（你也可以写到日志）
+            // 记录到控制台供调试
             Console.Error.WriteLine($"IO exception when writing '{DataFile}': {ioex.Message}");
             // 使用 Results.Json 并传入 statusCode 参数（StatusCode 没有接受 body 的重载）
             return Results.Json(new { error = "Storage IO error: " + ioex.Message }, statusCode: 500);

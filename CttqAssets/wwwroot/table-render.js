@@ -1,4 +1,3 @@
-// table-render.js — 修正版，包含 legend 交互过滤（单击切换）
 (function () {
     const API = '/api/assets';
     const COL_KEYS = ['neo', 'first', 'second', 'third'];

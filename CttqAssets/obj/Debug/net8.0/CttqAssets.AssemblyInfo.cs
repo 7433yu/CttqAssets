@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CttqAssets")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fa88030f7cd9f4f764086640c71b1c4d9a98d5fe")]
 [assembly: System.Reflection.AssemblyProductAttribute("CttqAssets")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CttqAssets")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

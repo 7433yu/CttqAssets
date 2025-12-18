@@ -176,11 +176,25 @@
       margin-left: 6px;
       flex: 0 0 18px;
     }
-    .badge.phase-1 { background: #e84a4a; }
-    .badge.phase-2 { background: #e85a2b; }
-    .badge.phase-3 { background: #c42b55; }
-    .badge.pcc { background: #7b2b2b; }
-    .badge.appr { background: #2fa953; } /* green check */
+      .badge.phase-1 {
+          background: #e42929e8
+      }
+
+      .badge.phase-2 {
+          background: #e42929e8
+      }
+
+      .badge.phase-3 {
+          background: #e42929e8
+      }
+
+      .badge.pcc {
+          background: #e42929e8
+      }
+
+      .badge.appr {
+          background: #e42929e8
+      } 
 
     /* 弹出的详细信息框 */
     .popover {
@@ -201,23 +215,44 @@
     .popover .desc { font-size: 13px; color: #222; line-height: 1.35; }
 
     /* 图例样式 */
-    .legend {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      margin-top: 14px;
-      flex-wrap: wrap;
-      padding: 10px 6px;
-    }
-    .legend .item {
-      display: inline-flex;
-      gap: 8px;
-      align-items: center;
-      background: rgba(0,0,0,0.02);
-      padding: 6px 10px;
-      border-radius: 14px;
-      font-size: 13px;
-    }
+      .legend {
+          display: flex;
+          gap: 12px;
+          align-items: center;
+          margin-top: 14px;
+          flex-wrap: wrap;
+          padding: 10px 6px;
+      }
+      .legend .item {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          padding: 6px 10px;
+          border-radius: 14px;
+          cursor: pointer;
+          user-select: none;
+      }
+
+      .legend .legend-badge {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          width: 18px;
+          height: 18px;
+          border-radius: 50%;
+          font-size: 11px;
+          color: #fff;
+          flex: 0 0 18px;
+      }
+
+      /* swatch（bio/chem）对齐为圆点样式 */
+      .legend .legend-badge.swatch {
+          width: 18px;
+          height: 18px;
+          border-radius: 50%;
+          display: inline-block;
+          box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+      }
 
     .legend .item.bio {
       background: #09aeb0 !important;  /* 青色背景 */
@@ -301,7 +336,6 @@
           border-top: 1.5px solid rgba(2, 2, 2, 0.646) !important;
           border-bottom: 1.5px solid rgba(2, 2, 2, 0.646) !important
       }
-      }
   </style>
 </head>
 <body>
@@ -329,294 +363,6 @@
                 </tr>
             </thead>
             <tbody id="table-body">
-
-                <!-- NSCLC Driver Gene Negative (top group) -->
-                <!--<tr>-->
-                <!-- 合并前两列显示 -->
-                <!--<td class="left-label" colspan="2">
-                    NSCLC<br><span style="font-weight:500;">Driver Gene Negative</span><br><span style="font-weight:600; margin-top:6px;">44%, 470K</span>
-                  </td>
-
-                  <td>
-                    <div class="asset bio" tabindex="0" data-title="贝莫苏拜单抗+安罗替尼" data-phase="3" data-desc="参考：新辅助/辅助组合研究 - 贝莫苏拜单抗联合安罗替尼">
-                      <span class="name">贝莫苏拜单抗+安罗替尼</span>
-                      <span class="badge phase-3">3</span>
-                    </div>
-                  </td>
-
-                  <td>
-                    <div class="asset bio" tabindex="0" data-title="派安普利单抗+化疗" data-phase="appr" data-desc="已上市/批准的免疫疗法联合化疗方案（示例）">
-                      <span class="name">派安普利单抗+化疗</span>
-                      <span class="badge appr">✓</span>
-                    </div>
-
-                    <div class="asset bio" tabindex="0" data-title="贝莫苏拜单抗+安罗替尼+化疗" data-phase="3" data-desc="三联：贝莫苏拜单抗+安罗替尼+化疗（临床研究）">
-                      <span class="name">贝莫苏拜单抗+安罗替尼+化疗</span>
-                      <span class="badge phase-3">3</span>
-                    </div>
-
-                    <div class="asset bio" tabindex="0" data-title="贝莫苏拜单抗抗+化疗，序贯安罗替尼" data-phase="3" data-desc="序贯策略：先免疫/后小分子">
-                      <span class="name">贝莫苏拜单抗+化疗，序贯安罗替尼</span>
-                      <span class="badge phase-3">3</span>
-                    </div>
-                  </td>
-
-                  <td>
-                    <div class="asset bio" tabindex="0" data-title="TQB2101 (ROR1 ADC)" data-phase="1" data-desc="TQB2101：ROR1 ADC，临床阶段1">
-                      <span class="name">TQB2101</span>
-                      <span class="sub">(ROR1 ADC)</span>
-                      <span class="badge phase-1">1</span>
-                    </div>
-
-                    <div class="asset bio" tabindex="0" data-title="TQB6556 (PDL1/VEGF bsAb)" data-phase="pcc" data-desc="双特异性抗体，PCC 标注">
-                      <span class="name">TQB6556</span>
-                      <span class="sub">(PDL1/VEGF bsAb)</span>
-                      <span class="badge pcc">P</span>
-                    </div>
-
-                    <div class="asset bio" tabindex="0" data-title="TQB6411 (EGFR/c-Met ADC)" data-phase="1" data-desc="EGFR/c-Met 联合ADC，早期临床">
-                      <span class="name">TQB6411</span>
-                      <span class="sub">(EGFR/c-Met ADC)</span>
-                      <span class="badge phase-1">1</span>
-                    </div>
-
-                     <div class="asset bio" tabindex="0" data-title="IM201 (PD1-IL2)" data-phase="1" data-desc="你好我是用来暂时填充这一块的数据">
-                      <span class="name">IM201</span>
-                      <span class="sub">(PD1-IL2)</span>
-                      <span class="badge phase-1">1</span>
-                    </div>
-
-                  </td>
-
-                  <td>
-                    <div class="asset chem" tabindex="0" data-title="安罗替尼（单药）" data-phase="appr" data-desc="安罗替尼：上市药物/已批准适应症（展示）">
-                      <span class="name">安罗替尼</span>
-                      <span class="badge appr">✓</span>
-                    </div>
-
-                    <div class="asset chem" tabindex="0" data-title="TQB6520 (PDL1/VEGF ADC)" data-phase="pcc" data-desc="PDL1/VEGF ADC，P 标注">
-                      <span class="name">TQB6520</span>
-                      <span class="sub">(PDL1/VEGF ADC)</span>
-                      <span class="badge pcc">P</span>
-                    </div>
-
-                    <div class="asset chem" tabindex="0" data-title="TQB2319 (ITGB6 ADC)" data-phase="pcc" data-desc="ITGB6 定向 ADC，P 标注">
-                      <span class="name">TQB2319</span>
-                      <span class="sub">(ITGB6 ADC)</span>
-                      <span class="badge pcc">P</span>
-                    </div>
-
-                    <div class="asset chem" tabindex="0" data-title="TQB3218 (PRMT5)" data-phase="pcc" data-desc="PRMT5 抑制剂，P 标注">
-                      <span class="name">TQB3218</span>
-                      <span class="sub">(PRMT5)</span>
-                      <span class="badge pcc">P</span>
-                    </div>
-
-                  </td>
-                </tr>-->
-                <!-- NSCLC Driver Gene Positive:
-                     左侧拆成两列：第一个 td (left-label) rowspan=4 放主信息（不合并）
-                     第二列每一行单独放置对应的 subtype（EGFR / KRAS / ALK/ROS1 / Others）
-                -->
-                <!--<tr class="subrow">-->
-                <!-- 左侧主信息（占第一列，跨 4 行） -->
-                <!--<td class="left-label" rowspan="4">
-                  <div class="epi-main">
-                    <div class="epi-title">NSCLC</div>
-                    <div class="epi-sub">Driver Gene Positive</div>
-                    <div class="epi-num">36%, 380K</div>
-                  </div>
-                </td>-->
-                <!-- 左侧第二列：EGFR（不合并） -->
-                <!--<td class="left-label dashed">
-                  EGFR<br><span style="font-weight:500;">(~50%)</span>
-                </td>
-
-                <td class="dashed"></td>-->
-                <!-- EGFR 行：First-line -->
-                <!--<td class="dashed">
-                  <div class="asset bio" tabindex="0" data-title="TQB2922 (EGFR/c-Met)+Osim" data-phase="2" data-desc="TQB2922 联合 Osim">
-                    <span class="name">TQB2922</span>
-                    <span class="sub">(EGFR/c-Met)+Osim</span>
-                    <span class="badge phase-2">2</span>
-                  </div>
-
-                  <div class="asset bio" tabindex="0" data-title="TQB2922 (SC)" data-phase="1" data-desc="TQB2922 (SC) 皮下制剂">
-                    <span class="name">TQB2922 (SC)</span>
-                    <span class="sub">(EGFR/c-Met)</span>
-                    <span class="badge phase-1">1</span>
-                  </div>
-                </td>-->
-                <!-- EGFR 行：Second-line -->
-                <!--<td class="dashed">
-                  <div class="asset bio" tabindex="0" data-title="TQB2101 (ROR1 ADC)" data-phase="1" data-desc="TQB2101：ROR1 ADC">
-                    <span class="name">TQB2101</span>
-                    <span class="sub">(ROR1 ADC)</span>
-                    <span class="badge phase-1">1</span>
-                  </div>
-
-                  <div class="asset chem" tabindex="0" data-title="TQB3002 (4G EGFR-TKI)" data-phase="1" data-desc="4G EGFR-TKI 候选">
-                    <span class="name">TQB3002</span>
-                    <span class="sub">(4G EGFR-TKI)</span>
-                    <span class="badge phase-1">1</span>
-                  </div>
-
-                  <div class="asset chem" tabindex="0" data-title="TQB5427 (EGFR PROTAC)" data-phase="pcc" data-desc="EGFR PROTAC（P）">
-                    <span class="name">TQB5427</span>
-                    <span class="sub">(EGFR PROTAC)</span>
-                    <span class="badge pcc">P</span>
-                  </div>
-                </td>-->
-                <!-- EGFR 行：Third-line -->
-                <!--<td class="dashed">
-                    <div class="asset bio" tabindex="0" data-title="TQB6411 (EGFR/c-Met ADC)" data-phase="1" data-desc="EGFR/c-Met 联合 ADC">
-                      <span class="name">TQB6411</span>
-                      <span class="sub">(EGFR/c-Met ADC)</span>
-                      <span class="badge phase-1">1</span>
-                    </div>
-                  </td>
-                </tr>-->
-                <!-- KRAS -->
-                <!--<tr class="subrow">-->
-                <!-- 左侧第二列：KRAS -->
-                <!--<td class="left-label dashed">
-                    KRAS<br><span style="font-weight:500;">(~10%)</span>
-                  </td>
-
-                  <td class="dashed"></td>
-
-                  <td class="dashed">
-                    <div class="asset chem">
-                      <span class="name">格索雷塞 + IN10018</span>
-                      <span class="badge phase-3">3</span>
-                    </div>
-                  </td>
-
-                  <td class="dashed">
-                    <div class="asset chem">
-                      <span class="name">格索雷塞</span>
-                      <span class="sub">(KRAS G12C)</span>
-                      <span class="badge phase-1">1</span>
-                    </div>
-                  </td>
-
-                  <td class="dashed">
-                    <div class="asset chem">
-                      <span class="name">TQB3125</span>
-                      <span class="sub">(pan-KRAS)</span>
-                      <span class="badge pcc">P</span>
-                    </div>
-
-                    <div class="asset chem">
-                      <span class="name">TQB3206</span>
-                      <span class="sub">(KRAS G12D)</span>
-                      <span class="badge pcc">P</span>
-                    </div>
-
-                    <div class="asset chem">
-                      <span class="name">TQB5466</span>
-                      <span class="sub">(pan-KRAS PROTAC)</span>
-                      <span class="badge pcc">P</span>
-                    </div>
-                  </td>
-                </tr>-->
-                <!-- ALK / ROS1 -->
-                <!--<tr class="subrow">
-                  <td class="left-label dashed">
-                    ALK/ROS1<br><span style="font-weight:500;">(~5%)</span>
-                  </td>
-
-                  <td class="dashed"></td>
-
-                  <td class="dashed">
-                    <div class="asset chem">
-                      <span class="name">依奉阿克</span>
-                      <span class="sub">(ALK)</span>
-                      <span class="badge appr">✓</span>
-                    </div>
-
-                    <div class="asset chem">
-                      <span class="name">安奈克替尼</span>
-                      <span class="sub">(ROS1)</span>
-                      <span class="badge appr">✓</span>
-                    </div>
-                  </td>
-
-                  <td class="dashed">
-                    <div class="asset chem">
-                      <span class="name">TQB5410</span>
-                      <span class="badge pcc">P</span>
-                    </div>
-                  </td>
-
-                  <td class="dashed"></td>
-                </tr>-->
-                <!-- Others -->
-                <!--<tr class="subrow">
-                  <td class="left-label">Others</td>
-
-                  <td></td>
-
-                  <td></td>
-
-                  <td></td>
-
-                  <td>
-                    <div class="asset bio">
-                      <span class="name">TQB2102</span>
-                      <span class="sub">(HER2 bsADC)</span>
-                      <span class="badge phase-2">2</span>
-                    </div>
-
-                    <div class="asset chem">
-                      <span class="name">TQB3218</span>
-                      <span class="sub">(PRMT5)</span>
-                      <span class="badge pcc">P</span>
-                    </div>
-
-                    <div class="asset chem">
-                      <span class="name">TQB5452</span>
-                      <span class="sub">(MATA2)</span>
-                      <span class="badge pcc">P</span>
-                    </div>
-
-                    <div class="asset chem">
-                      <span class="name">TQB3312</span>
-                      <span class="sub">(SMARCA2 PROTAC)</span>
-                      <span class="badge pcc">P</span>
-                    </div>
-                  </td>
-                </tr>-->
-                <!-- SCLC group -->
-                <!--<tr>-->
-                <!-- SCLC 保持合并前两列显示 -->
-                <!--<td class="left-label" colspan="2">
-                  SCLC<br><span style="font-weight:500;">20%, 210K</span>
-                </td>
-                <td>-->
-                <!-- none -->
-                <!--</td>
-                  <td>
-                    <div class="asset bio" tabindex="0" data-title="贝莫苏拜单抗+安罗替尼+化疗" data-phase="3" data-desc="SCLC 的三联试验/维持治疗探索">
-                      <span class="name">贝莫苏拜单抗+安罗替尼+化疗</span>
-                      <span class="badge appr">✓</span>
-                    </div>
-
-                    <div class="asset bio" tabindex="0" data-title="贝莫苏拜单抗单抗+安罗替尼（维持治疗）" data-phase="3" data-desc="一线或维持策略">
-                      <span class="name">贝莫苏拜单抗+安罗替尼（维持治疗）</span>
-                      <span class="badge phase-3">3</span>
-                    </div>
-                  </td>
-
-                  <td></td>
-                  <td>
-                    <div class="asset chem" tabindex="0" data-title="安罗替尼（SCLC）" data-phase="appr" data-desc="安罗替尼在 SCLC 中的研究或批准信息（示例）">
-                      <span class="name">安罗替尼</span>
-                      <span class="badge appr">✓</span>
-                    </div>
-                  </td>
-                </tr>-->
-
             </tbody>
         </table>
 
@@ -627,13 +373,32 @@
             <div class="desc" id="pop-desc">Description</div>
         </div>
 
-        <!-- Legend -->
         <div class="legend" aria-hidden="false">
-            <div class="item"><span class="swatch" style="background:#ef6c5a; border-radius:50%"></span> Approval</div>
-            <div class="item"><span class="swatch" style="background:#d93c3c; border-radius:50%">&nbsp;</span> PCC</div>
-            <div class="item"><span class="swatch" style="background:#e84a4a; border-radius:50%">&nbsp;</span> Phase 1</div>
-            <div class="item"><span class="swatch" style="background:#e85a2b; border-radius:50%">&nbsp;</span> Phase 2</div>
-            <div class="item"><span class="swatch" style="background:#c42b55; border-radius:50%">&nbsp;</span> Phase 3</div>
+            <div class="item" title="PCC" data-filter="pcc">
+                <span class="legend-badge badge pcc">P</span>
+                PCC
+            </div>
+
+            <div class="item" title="Phase 1" data-filter="1">
+                <span class="legend-badge badge phase-1">1</span>
+                Phase 1
+            </div>
+
+            <div class="item" title="Phase 2" data-filter="2">
+                <span class="legend-badge badge phase-2">2</span>
+                Phase 2
+            </div>
+
+            <div class="item" title="Phase 3" data-filter="3">
+                <span class="legend-badge badge phase-3">3</span>
+                Phase 3
+            </div>
+
+            <div class="item" title="Approval" data-filter="appr">
+                <span class="legend-badge badge appr">✓</span>
+                Approval
+            </div>
+
             <div class="item bio"></span> Biological Innovative</div>
             <div class="item chem"></span> Chemical Innovative</div>
         </div>

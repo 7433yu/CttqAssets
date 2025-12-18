@@ -32,3 +32,4 @@ C:\Users\8630446\source\repos\CttqAssets\CttqAssets\obj\Debug\net8.0\CttqAssets.
 C:\Users\8630446\source\repos\CttqAssets\CttqAssets\obj\Debug\net8.0\CttqAssets.genruntimeconfig.cache
 C:\Users\8630446\source\repos\CttqAssets\CttqAssets\obj\Debug\net8.0\ref\CttqAssets.dll
 C:\Users\8630446\source\repos\CttqAssets\CttqAssets\bin\Debug\net8.0\Data.json
+C:\Users\8630446\source\repos\CttqAssets\CttqAssets\obj\Debug\net8.0\CttqAssets.sourcelink.json
